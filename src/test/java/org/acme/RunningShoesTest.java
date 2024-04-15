@@ -19,7 +19,7 @@ class RunningShoesTest {
         runningShoes.setType("road");
         runningShoes.setName("hyperfuse");
         runningShoes.setSize(38.5F);
-        runningShoes.setColor("whites");
+        runningShoes.setColor("white");
 
         System.out.printf("IsExist result: %s\n", runningShoesRepository.findByMerkAndNameAndTypeAndColorAndSize(runningShoes));
     }
