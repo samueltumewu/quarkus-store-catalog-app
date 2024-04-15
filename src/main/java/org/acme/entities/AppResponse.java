@@ -13,5 +13,5 @@ import java.util.List;
 public class AppResponse<T> {
     private Boolean success;
     private String errorCode;
-    private List<T> data;
+    private T data;
 }

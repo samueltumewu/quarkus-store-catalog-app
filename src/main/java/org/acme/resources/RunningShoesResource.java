@@ -2,10 +2,7 @@ package org.acme.resources;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.entities.AppResponse;
@@ -27,7 +24,7 @@ public class RunningShoesResource {
         List<RunningShoes> runningShoesList = runningShoesRepository.findByName(name);
         return !runningShoesList.isEmpty() ?
             Response.ok(
-                    AppResponse.<RunningShoes>builder().data(runningShoesList).success(true).build()
+                    AppResponse.<List<RunningShoes>>builder().data(runningShoesList).success(true).build()
                     ,MediaType.APPLICATION_JSON).build()
                 : Response.status(Response.Status.NOT_FOUND).
                     entity(AppResponse.builder().errorCode("9999").success(false).build())
@@ -46,7 +43,34 @@ public class RunningShoesResource {
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(AppResponse.<StackTraceElement>builder().errorCode("9999" + e.getLocalizedMessage()).success(false).data(Arrays.stream(e.getStackTrace()).toList()).build())
+                    .entity(AppResponse.<List<StackTraceElement>>builder().errorCode("9999" + e.getLocalizedMessage()).success(false).data(Arrays.stream(e.getStackTrace()).toList()).build())
+                    .build();
+        }
+    }
+
+    @Path("/quantity/{quantity}")
+    @PUT
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateRunningShoeQuantity(RunningShoes runningShoes, @PathParam("quantity") Integer quantity) {
+        try {
+            runningShoes.setQuantity(quantity);
+            RunningShoes runningShoesResult = runningShoesRepository.updateQuantity(runningShoes);
+            return runningShoesResult != null ?
+                Response.status(Response.Status.CREATED)
+                        .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesResult).build())
+                        .build()
+                        :
+                Response.status(Response.Status.BAD_REQUEST)
+                    .entity(AppResponse.builder().errorCode("0001").success(false).data("Probably the running shoe does not exist.").build())
+                    .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(AppResponse.<List<StackTraceElement>>builder()
+                            .errorCode("9999" + e.getLocalizedMessage())
+                            .success(false)
+                            .data(Arrays.stream(e.getStackTrace()).toList())
+                            .build())
                     .build();
         }
     }
