@@ -1,3 +1,12 @@
+
+
+# This project still on development, but...
+ You can access the first api by hit this url:   
+```
+curl https://store-catalog-app-1-0-0-snapshot.onrender.com/shoes/name/hyperfuse
+```  
+ May take a little longer at first hit due to free cloud hosting infrastructure haha 
+
 # store-catalog-app
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
