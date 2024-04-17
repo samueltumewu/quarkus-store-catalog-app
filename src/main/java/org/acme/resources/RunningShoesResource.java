@@ -11,6 +11,7 @@ import org.acme.repositories.RunningShoesRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/shoes")
 public class RunningShoesResource {
@@ -64,6 +65,38 @@ public class RunningShoesResource {
                 Response.status(Response.Status.BAD_REQUEST)
                     .entity(AppResponse.builder().errorCode("0001").success(false).data("Probably the running shoe does not exist.").build())
                     .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(AppResponse.<List<StackTraceElement>>builder()
+                            .errorCode("9999" + e.getLocalizedMessage())
+                            .success(false)
+                            .data(Arrays.stream(e.getStackTrace()).toList())
+                            .build())
+                    .build();
+        }
+    }
+
+    @Path("/id/{id}")
+    @DELETE
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteRunningShoesById(@PathParam("id") Long id) {
+        try {
+            Optional<RunningShoes> optionalRunningShoes = runningShoesRepository.findByIdOptional(id);
+            RunningShoes runningShoesResult = null;
+            if (optionalRunningShoes.isPresent()){
+                runningShoesResult = optionalRunningShoes.get();
+                runningShoesRepository.delete(runningShoesResult);
+            }
+
+            return runningShoesResult != null ?
+                    Response.status(Response.Status.OK)
+                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesResult).build())
+                            .build()
+                    :
+                    Response.status(Response.Status.BAD_REQUEST)
+                            .entity(AppResponse.builder().errorCode("0001").success(false).data("Probably the running shoe does not exist.").build())
+                            .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(AppResponse.<List<StackTraceElement>>builder()

@@ -20,14 +20,12 @@ public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
         params.put("color", runningShoes.getColor());
         params.put("size", runningShoes.getSize());
 
-        Optional<RunningShoes> optionalRunningShoes = find(
+        return find(
                 "merk = :merk and " +
                 "name = :name and " +
                 "type = :type and " +
                 "color = :color and " +
                 "size = :size", params).firstResultOptional();
-
-        return optionalRunningShoes;
     }
 
     public List<RunningShoes> findByName(String name) {

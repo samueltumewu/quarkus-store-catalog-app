@@ -20,8 +20,6 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        log.info("Test:");
-        log.info(Arrays.toString(runningShoesRepository.listAll().toArray()));
         return "Hello! Welcome to quarkus-store-catalog-app. \nCurrently is on development by samueltumewu. \nPlease check readme to access and test the api. \nThanks!";
     }
 }
