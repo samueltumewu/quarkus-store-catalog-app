@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import org.acme.entities.AppResponse;
 import org.acme.entities.RunningShoes;
 import org.acme.repositories.RunningShoesRepository;
+import org.jboss.resteasy.reactive.RestQuery;
 
 import java.util.Arrays;
 import java.util.List;
@@ -96,6 +97,32 @@ public class RunningShoesResource {
                     :
                     Response.status(Response.Status.BAD_REQUEST)
                             .entity(AppResponse.builder().errorCode("0001").success(false).data("Probably the running shoe does not exist.").build())
+                            .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(AppResponse.<List<StackTraceElement>>builder()
+                            .errorCode("9999" + e.getLocalizedMessage())
+                            .success(false)
+                            .data(Arrays.stream(e.getStackTrace()).toList())
+                            .build())
+                    .build();
+        }
+    }
+
+    @GET
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response findAllByPage(@RestQuery Integer page) {
+        try {
+            List<RunningShoes> runningShoesList = runningShoesRepository.findAllByPage(page);
+
+            return runningShoesList != null ?
+                    Response.status(Response.Status.OK)
+                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesList).build())
+                            .build()
+                    :
+                    Response.status(Response.Status.BAD_REQUEST)
+                            .entity(AppResponse.builder().errorCode("0001").success(false).data("Probably the running shoes list is empty.").build())
                             .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

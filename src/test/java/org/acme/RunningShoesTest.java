@@ -6,6 +6,9 @@ import org.acme.entities.RunningShoes;
 import org.acme.repositories.RunningShoesRepository;
 import org.junit.jupiter.api.Test;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.containsStringIgnoringCase;
+
 @QuarkusTest
 class RunningShoesTest {
 
@@ -22,5 +25,14 @@ class RunningShoesTest {
         runningShoes.setColor("white");
 
         System.out.printf("IsExist result: %s\n", runningShoesRepository.findByMerkAndNameAndTypeAndColorAndSize(runningShoes));
+    }
+
+    @Test
+    public void testFindAllByPage_forPageNumberZero() {
+        given()
+                .when().get("/shoes?page=0")
+                .then()
+                .statusCode(200)
+                .body(containsStringIgnoringCase("merk"));
     }
 }

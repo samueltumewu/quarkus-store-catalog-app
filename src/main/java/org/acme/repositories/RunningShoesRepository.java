@@ -1,6 +1,8 @@
 package org.acme.repositories;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.entities.RunningShoes;
 
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
+    private static final int PAGE_SIZE = 10;
 
     public Optional<RunningShoes> findByMerkAndNameAndTypeAndColorAndSize(RunningShoes runningShoes) {
         Map<String, Object> params = new HashMap<>();
@@ -46,4 +49,10 @@ public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
         }
         return null;
     }
+
+    public List<RunningShoes> findAllByPage(Integer pageNumber) {
+        PanacheQuery<RunningShoes> PanacheQueryRunningShoes = RunningShoes.findAll(Sort.by("id")).page(pageNumber, PAGE_SIZE);
+        return PanacheQueryRunningShoes.list();
+    }
+
 }
