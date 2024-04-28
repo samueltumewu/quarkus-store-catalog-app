@@ -30,7 +30,7 @@ class RunningShoesTest {
     @Test
     public void testFindAllByPage_forPageNumberZero() {
         given()
-                .when().get("/shoes?page=0")
+                .when().get("/shoes?page=0&per_page=10")
                 .then()
                 .statusCode(200)
                 .body(containsStringIgnoringCase("merk"));

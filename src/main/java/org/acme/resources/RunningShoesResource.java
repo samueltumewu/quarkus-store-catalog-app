@@ -22,7 +22,7 @@ public class RunningShoesResource {
     @Path("/name/{name}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findByNameUsingRepositoryg (String name) {
+    public Response findByNameUsingRepository (String name) {
         List<RunningShoes> runningShoesList = runningShoesRepository.findByName(name);
         return !runningShoesList.isEmpty() ?
             Response.ok(
@@ -112,13 +112,14 @@ public class RunningShoesResource {
     @GET
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response findAllByPage(@RestQuery Integer page) {
+    public Response findAllByPage(@RestQuery("per_page") Integer perPage, @RestQuery Integer page) {
         try {
-            List<RunningShoes> runningShoesList = runningShoesRepository.findAllByPage(page);
+            List<RunningShoes> runningShoesList = runningShoesRepository.findAllByPage(page, perPage);
+            int lastPageIndex = runningShoesRepository.getIndexOfLastPage(perPage);
 
             return runningShoesList != null ?
                     Response.status(Response.Status.OK)
-                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesList).build())
+                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesList).lastPageIndex(lastPageIndex).build())
                             .build()
                     :
                     Response.status(Response.Status.BAD_REQUEST)
