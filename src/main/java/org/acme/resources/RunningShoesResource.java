@@ -115,11 +115,11 @@ public class RunningShoesResource {
     public Response findAllByPage(@RestQuery("per_page") Integer perPage, @RestQuery Integer page) {
         try {
             List<RunningShoes> runningShoesList = runningShoesRepository.findAllByPage(page, perPage);
-            int lastPageIndex = runningShoesRepository.getIndexOfLastPage(perPage);
+            long countDatas = runningShoesRepository.countTotalData();
 
             return runningShoesList != null ?
                     Response.status(Response.Status.OK)
-                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesList).lastPageIndex(lastPageIndex).build())
+                            .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesList).count(countDatas).build())
                             .build()
                     :
                     Response.status(Response.Status.BAD_REQUEST)

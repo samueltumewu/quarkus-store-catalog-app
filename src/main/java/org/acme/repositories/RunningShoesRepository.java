@@ -55,7 +55,7 @@ public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
         return PanacheQueryRunningShoes.list();
     }
 
-    public int getIndexOfLastPage(int perPage) {
-        return RunningShoes.findAll(Sort.by("id")).page(Page.ofSize(perPage)).pageCount() - 1;
+    public long countTotalData() {
+        return RunningShoes.findAll().count();
     }
 }

@@ -13,6 +13,6 @@ import java.util.List;
 public class AppResponse<T> {
     private Boolean success;
     private String errorCode;
-    private Integer lastPageIndex;
+    private Long count;
     private T data;
 }
