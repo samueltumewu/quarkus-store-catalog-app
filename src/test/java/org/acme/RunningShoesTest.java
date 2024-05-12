@@ -24,7 +24,7 @@ class RunningShoesTest {
         runningShoes.setSize(38.5F);
         runningShoes.setColor("white");
 
-        System.out.printf("IsExist result: %s\n", runningShoesRepository.findByMerkAndNameAndTypeAndColorAndSize(runningShoes));
+//        System.out.printf("IsExist result: %s\n", runningShoesRepository.findByMerkAndNameAndTypeAndColorAndSize(runningShoes));
     }
 
     @Test
@@ -34,5 +34,10 @@ class RunningShoesTest {
                 .then()
                 .statusCode(200)
                 .body(containsStringIgnoringCase("merk"));
+    }
+
+    @Test
+    public void testPutQuantity() {
+        System.out.printf("IsExist result: %s\n", runningShoesRepository.updateQuantity(6L,2));
     }
 }

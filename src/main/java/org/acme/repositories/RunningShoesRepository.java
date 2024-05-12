@@ -15,22 +15,6 @@ import java.util.Optional;
 @ApplicationScoped
 public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
 
-    public Optional<RunningShoes> findByMerkAndNameAndTypeAndColorAndSize(RunningShoes runningShoes) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("merk", runningShoes.getMerk());
-        params.put("name", runningShoes.getName());
-        params.put("type", runningShoes.getType());
-        params.put("color", runningShoes.getColor());
-        params.put("size", runningShoes.getSize());
-
-        return find(
-                "merk = :merk and " +
-                "name = :name and " +
-                "type = :type and " +
-                "color = :color and " +
-                "size = :size", params).firstResultOptional();
-    }
-
     public List<RunningShoes> findByName(String name) {
         return find("lower(name)",name.toLowerCase()).stream().toList();
     }
@@ -39,12 +23,14 @@ public class RunningShoesRepository implements PanacheRepository<RunningShoes> {
         PanacheRepository.super.persist(runningShoes);
     }
 
-    public RunningShoes updateQuantity(RunningShoes updateRunningShoe) {
-        Optional<RunningShoes> optionalRunningShoes = this.findByMerkAndNameAndTypeAndColorAndSize(updateRunningShoe);
+    public RunningShoes updateQuantity(Long shoesId, Integer quantity) {
+        Optional<RunningShoes> optionalRunningShoes = this.findByIdOptional(shoesId);
         if (optionalRunningShoes.isPresent()) {
             RunningShoes runningShoes = optionalRunningShoes.get();
-            runningShoes.setQuantity(updateRunningShoe.getQuantity());
+            System.out.println(">>Running shoes to be update: \n" + runningShoes.getQuantity());
+            runningShoes.setQuantity(quantity);
             this.save(runningShoes);
+            System.out.println("<<Running shoes been updated: \n" + runningShoes.getQuantity());
             return runningShoes;
         }
         return null;

@@ -50,14 +50,13 @@ public class RunningShoesResource {
         }
     }
 
-    @Path("/quantity/{quantity}")
+    @Path("id/{shoesId}/quantity/{quantity}")
     @PUT
     @Transactional
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateRunningShoeQuantity(RunningShoes runningShoes, @PathParam("quantity") Integer quantity) {
+    public Response updateRunningShoeQuantity(@PathParam("shoesId") Long shoesId, @PathParam("quantity") Integer quantity) {
         try {
-            runningShoes.setQuantity(quantity);
-            RunningShoes runningShoesResult = runningShoesRepository.updateQuantity(runningShoes);
+            RunningShoes runningShoesResult = runningShoesRepository.updateQuantity(shoesId, quantity);
             return runningShoesResult != null ?
                 Response.status(Response.Status.CREATED)
                         .entity(AppResponse.builder().errorCode("0000").success(true).data(runningShoesResult).build())
